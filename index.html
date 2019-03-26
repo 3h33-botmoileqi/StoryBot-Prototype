@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html class="js">
+	<head>
+		<!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="script.js"></script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	</head>
+    <body>
+        <div class="frame"><!--col-lg-6 col-lg-offset-3-->
+            <ul id="tchat"></ul>
+            <div style="display:none">
+                <div class="msj-rta macro">                        
+                    <div class="text text-r" style="background:whitesmoke !important">
+                        <input class="mytext" placeholder="Type a message"/>
+                    </div> 
+
+                </div>
+                <div style="padding:10px;">
+                    <span class="glyphicon glyphicon-share-alt"></span>
+                </div>                
+            </div>
+        </div>
+            <div class="story-input" style="position:absolute;left:50%;top:50%;transform: translate(-50%,-50%);text-align: center;">
+                <div class="input-file-container">  
+                    <input class="input-file" id="fileInput" type="file">
+                    <label tabindex="0" for="my-file" class="input-file-trigger">Upload your story</label>
+                </div>
+                <div class="input-file-container">
+                    <button class="input-file" id="demoInput" style="min-height: 50px;"></button>
+                    <label tabindex="0" for="my-file" class="input-file-trigger">Use Demo</label>
+                </div>
+            </div>
+        <script>
+            var editor = false;
+            $(document).ready(function() {
+                $("#fileInput").change(function(){importJSON();});
+                $("#demoInput").click(function(){loadJSON(demo);startStory();$(".story-input").hide();});
+            });
+            var demo = 
+            {
+              "config": {
+                "displayActorName": true,
+                "customCSS": {
+                  ".msj":{"background":"#c9c2fe"},
+                  ".msj::before":{"border-color":"transparent #c9c2fe transparent transparent"},
+                  ".msj-rta":{"background":"#fdc4c5"},
+                  ".msj-rta::after":{"border-color":"#fdc4c5 transparent transparent transparent"}
+                }
+              },
+              "actor": {
+                "Personnage1": {
+                  "avatar": "https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48",
+                  "side": "left"
+                },
+                "Personnage2": {
+                  "avatar": "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg",
+                  "side": "right"
+                },
+                "Personnage3": {
+                  "avatar": "https://yt3.ggpht.com/a-/AN66SAyjHOM6XYXi_WmTK5F3GJ0pu3G5nQg1gVS4aA=s48-c-k-c0xffffffff-no-rj-mo",
+                  "side": "left"
+                }
+              },
+              "conversation": [
+                {
+                  "actor": "Personnage1",
+                  "timestamp": 1521374361,
+                  "text": "Bonjour !",
+                  "payload": {},
+                  "delay": 0,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage2",
+                  "timestamp": 1521374361,
+                  "text": "Hey, comment ça va ?",
+                  "payload": {},
+                  "delay": 2000,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage1",
+                  "timestamp": 1521374361,
+                  "text": "Très bien ! Regarde mon nouveau Poster !",
+                  "payload": {},
+                  "delay": 1000,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage1",
+                  "timestamp": 1521374361,
+                  "text": "",
+                  "payload": {
+                    "type": "image",
+                    "url": "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                  },
+                  "delay": 2000,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage3",
+                  "timestamp": 1521374361,
+                  "text": "C'est ma photo !",
+                  "payload": {},
+                  "delay": 1000,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage2",
+                  "timestamp": 1521374361,
+                  "text": "Bravo vous deux !",
+                  "payload": {},
+                  "delay": 2000,
+                  "tapeFlag": false
+                },
+                {
+                  "actor": "Personnage2",
+                  "timestamp": 1521374361,
+                  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                  "payload": {},
+                  "delay": 0,
+                  "tapeFlag": false
+                }
+              ]
+            };
+        </script>
+    </body>
+</html>

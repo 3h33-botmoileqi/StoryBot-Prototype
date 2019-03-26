@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <!-- HTTP
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
+        <!-- HTTPS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <!-- -->
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="script.js"></script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	</head>
+    <body>
+        <div class="frame" style="height: 790px"><!-- col-md-offset-3-->
+            <ul id="tchat"></ul>
+            <div style="display:none;">
+                <div class="msj-rta macro">                        
+                    <div class="text text-r" style="background:whitesmoke !important">
+                        <input class="mytext" placeholder="Type a message"/>
+                    </div> 
+
+                </div>
+                <div style="padding:10px;">
+                    <span class="glyphicon glyphicon-share-alt"></span>
+                </div>                
+            </div>
+        </div>
+        <div style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px">
+            <input type="file" id="fileInput" style="display:none">
+            <button id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
+            <button id="actorWindowToggle">Liste Acteur</button>
+            <button onclick="reloadChat();">Reload</button>
+            <button onclick="debugJSON();">Debug</button>
+            <button onclick="$('#fileInput').trigger('click');">Import</button>
+            <button onclick="exportJSON();">Export</button>
+        </div>
+        <div class="window" id="configWindow" style="display: none">
+            <div>
+                <button onclick="$('#configWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
+                <form name="configForm" id="configSubmit" method="post">
+                    <div>
+                        <label>Story Name: <input type="text" name="storyName"></label>
+                        <label>Display actor name: <input type="checkbox" name="displayActorName"></label>
+                        <label>Background type:
+                            <label>Color :
+                            <input type="radio" name="background_type" value="color" onchange="$('#background_color').show();$('#background_url').hide()" checked></label>
+                            <label>Url:
+                            <input type="radio" name="background_type" value="url" onchange="$('#background_color').hide();$('#background_url').show()"></label>
+                        </label><br>
+                        <div id="background_color" style="display:block">
+                            <label>Background Color:
+                                <input type="color" name="background_color">
+                            </label><br>
+                        </div>
+                        <div id="background_url" style="display:none">
+                            <label>Background URL :
+                                <input type="text" name="background_url">
+                            </label><br>
+                        </div>
+                        <label>Message Left Color :
+                            <input type="color" name="msj_l_color">
+                        </label><br>
+                        <label>Message Right Color :
+                            <input type="color" name="msj_r_color">
+                        </label><br>
+                        <input type="submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="window" id="actorWindow" style="display: none">
+            <div>
+                <button onclick="$('#actorWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
+                <form name="actorForm" id="actorSubmit" method="post">
+                    <div>
+                        <label>Name: <input type="text" name="name"></label>
+                        <label>Avatar:<input type="text" name="avatar"></label>
+                        <label>Side:
+                            <input type="radio" name="side" value="left" checked> Left
+                            <input type="radio" name="side" value="right"> Right
+                        </label>
+                        <input type="submit">
+                    </div>
+                </form>
+                <ul id="actorList">
+                </ul>
+            </div>
+        </div>
+        <div class="window" id="messageWindow" style="display: none">
+            <div>
+            <form name="messageForm" id="messageSubmit" method="post">
+                        <input type="text" name="id" hidden>
+                        <input type="checkbox" name="edit" hidden>
+                        <label>Actor :
+                            <select id="actorSelector" name="actor"></select>
+                        </label><br>
+                        <label>Date & Heure :<input type="datetime-local" name="datetime"></label><br>
+                        <label>type Message :
+                            <label>Text<input type="radio" name="type" value="text" onchange="showText()" checked></label>
+                            <label>Media<input type="radio" name="type" value="payload" onchange="showPayload()"></label>
+                        </label><br>
+                        <div id="content-text" style="display:block">
+                            <label>Message :<input type="textarea" name="text"></label><br>
+                        </div>
+                        <div id="content-payload" style="display:none">
+                            <label>Type de contenu :
+                                <label>Image<input type="radio" name="content-type" value="image" checked></label>
+                                <label>Video<input type="radio" name="content-type" value="video"></label>
+                            </label><br>
+                            <label>Lien du contenu :<input type="text" name="content-url"></label><br>
+                        </div>
+                        <label>Delai d'affichage
+                            <input type="range" name="delay" id="delayInputId"min="0" max="10" value="0" oninput="delayOutputId.value = delayInputId.value+' sec'">
+                            <output id="delayOutputId">0 sec</output>
+                        </label><br>
+                        <!--<label>Delai de reception
+                            <input type="range" name="realtimeDelay" id="delayInputId"min="0" max="10" value="0" oninput="delayOutputId.value = delayInputId.value+' sec'">
+                            <output id="delayOutputId">0 sec</output>
+                        </label><br>-->
+                        <label>Touch pour continuer : <input type="checkbox" name="tapeFlag"></label><br>
+                        <input type="submit">
+                </form>
+            </div>
+        </div>
+        <script>
+            var editor = true;
+            $(document).ready(function() {
+                $("#fileInput").change(function(){importJSON();});
+                $("#actorWindowToggle").click(function(event){
+                    event.stopPropagation();
+                    if($('#actorWindow').css("display") == "none"){
+                        $('#actorWindow').show();
+                        console.log("show");
+                        if($("#messageWindow").css("display") == "block")
+                            $("#messageWindow").hide();
+                    }else{
+                        $('#actorWindow').hide();
+                        console.log("hide");
+                    }
+                });
+                $("#configWindowToggle").click(function(event){
+                    event.stopPropagation();
+                    if($('#configWindow').css("display") == "none"){
+                        loadConfig();
+                        $('#configWindow').show();
+                        if($("#messageWindow").css("display") == "block")
+                            $("#messageWindow").hide();
+                    }else{
+                        $('#configWindow').hide();
+                        console.log("hide");
+                    }
+                });
+            });
+        </script>   
+    </body>
+</html>
