@@ -120,11 +120,17 @@ body{
 }
 
 .message .toolbar>.glyphicon{
-    font-size: 1.25em;
+  font-size: 1.4em;
+  margin-bottom: 10px;
 }
 
 .message .toolbar>.glyphicon:hover{
     cursor: initial;
+}
+
+#MainMenu button{
+  font-size: 1.4em;
+  margin-left:2.5%;
 }
 
 input:focus{

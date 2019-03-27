@@ -29,14 +29,18 @@
                 </div>                
             </div>
         </div>
-        <div style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px">
+        <div id="MainMenu" style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px;display: flex;height: 5%;justify-content: flex-end;">
             <input type="file" id="fileInput" style="display:none">
-            <button id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
-            <button id="actorWindowToggle">Liste Acteur</button>
-            <button onclick="reloadChat();">Reload</button>
-            <button onclick="debugJSON();">Debug</button>
-            <button onclick="$('#fileInput').trigger('click');">Import</button>
-            <button onclick="exportJSON();">Export</button>
+            <button title="debug" onclick="debugJSON();">Debug</button>
+            <button title="Parametre de la Story" id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
+            <button title="Liste acteurs" id="actorWindowToggle"><span class="glyphicon glyphicon-user"></span></button>
+            <div style="border-left:3px solid #000; margin-left: 5%;margin-right: 5%"></div>
+            <button title="Recharger la story" onclick="reloadChat();"><span class="glyphicon glyphicon-refresh"></span></button>
+            <button title="Sauvegarder la story" onclick="saveLocal()"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+            <button title="Charger une story" onclick="importLocal()"><span class="glyphicon glyphicon-cloud-download"></span></button>
+            <div style="border-left:3px solid #000; margin-left: 5%;margin-right: 5%"></div>
+            <button title="Charger un fichier story" onclick="$('#fileInput').trigger('click');"><span class="glyphicon glyphicon-log-in"></button>
+            <button title="Exporter en fichier story" onclick="exportJSON();"><span class="glyphicon glyphicon-log-out"></span></button>
         </div>
         <div class="window" id="configWindow" style="display: none">
             <div>

@@ -46,12 +46,27 @@ var story = {
 };
 */
 var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "customCSS":{}},actor:{},conversation:[]};
-var story;
-if (localStorage.currentStory){
-    story = JSON.parse(localStorage.currentStory);
-}else{
-    story = emptyStory;
+var story = emptyStory;
+//--Load from local
+function importLocal(){
+    var storyName = prompt("Story name :");
+    if(storyName != null){
+        if(localStorage["story:"+storyName]){
+            story = JSON.parse(localStorage["story:"+storyName]);
+            reloadChat();
+        }
+        else{
+            alert("Story not found !");
+        }
+    }
 }
+
+//--
+function saveLocal(){
+    localStorage["story:"+story.config.storyName] = JSON.stringify(story);
+    console.log("story saved in localStorage!");
+}
+
 //-- ExportJSON
 function exportJSON(){
     var json_string = JSON.stringify(story, undefined, 2);
@@ -601,7 +616,7 @@ $(document).ready(function() {
         }
         //
         //Save story in coockie
-        localStorage.currentStory = JSON.stringify(story);    
+        localStorage["story:"+story.config.storyName] = JSON.stringify(story);    
     });
     /* DRAG & DROP Message*/
     var messageSelected = null;
