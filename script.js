@@ -46,7 +46,12 @@ var story = {
 };
 */
 var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "customCSS":{}},actor:{},conversation:[]};
-var story = emptyStory;
+var story;
+if (localStorage.currentStory){
+    story = JSON.parse(localStorage.currentStory);
+}else{
+    story = emptyStory;
+}
 //-- ExportJSON
 function exportJSON(){
     var json_string = JSON.stringify(story, undefined, 2);
@@ -210,14 +215,16 @@ function insertChat(message, append, messageId = null){
     
     if (actor.side == "left"){
         control = '<li class="message" id="'+messageId+'" style="width: 100%"><div class="align-l">' +
-                        '<div class="msj macro">' +
-                        '<div class="avatar"><img class="img-circle" style="width: 48px;" src="'+ actor.avatar +'" /></div>' +
-                            '<div class="text text-l">';
+                        '<div class="msj macro">';
+        if(story.config.displayActorAvatar)
+            control +=      '<div class="avatar"><img class="img-circle" style="width: 48px;" src="'+ actor.avatar +'" /></div>';
+        control +=          '<div class="text text-l">';
         if(story.config.displayActorName)
             control +=      '<span class="align-l">'+message.actor+'</span>';
         control +=          messageContentDisplay(message.text, message.payload);
-        control +=          '<p class="date"><small>'+date+'</small></p>' +
-                            '</div>' +
+        if(story.config.displayMessageDate)
+            control +=          '<p class="date"><small>'+date+'</small></p>';
+        control +=          '</div>' +
                         '</div>' ;
         if(editor)
             control +=  '<div class="toolbar"><span class="glyphicon glyphicon-remove messageRemove"></span><span class="glyphicon glyphicon-cog messageEdit"></span></div>'+ 
@@ -231,9 +238,11 @@ function insertChat(message, append, messageId = null){
         if(story.config.displayActorName)
             control +=      '<span class="align-r">'+message.actor+'</span>';
         control +=              messageContentDisplay(message.text, message.payload);
-        control +=              '<p class="date"><small>'+date+'</small></p>' +
-                            '</div>' +
-                        '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width: 48px;" src="'+actor.avatar+'" /></div>';                 
+        if(story.config.displayMessageDate)
+            control +=              '<p class="date"><small>'+date+'</small></p>' +
+                            '</div>';
+        if(story.config.displayActorAvatar)
+            control +=      '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width: 48px;" src="'+actor.avatar+'" /></div>';                 
         control +=  '</div></li>';
     }
     if(append || !$("#tchat>li").length)
@@ -348,10 +357,22 @@ function loadConfig(){
         $('#configWindow input[name="storyName"]').val(story.config.storyName);
     else
         $('#configWindow input[name="storyName"]').val("");
+
     if(story.config.displayActorName)
         $('#configWindow input[name="displayActorName"]').prop( "checked", true );
     else
         $('#configWindow input[name="displayActorName"]').prop( "checked", false );
+
+
+    if(story.config.displayActorAvatar)
+        $('#configWindow input[name="displayActorAvatar"]').prop( "checked", true );
+    else
+        $('#configWindow input[name="displayActorAvatar"]').prop( "checked", false );
+
+    if(story.config.displayMessageDate)
+        $('#configWindow input[name="displayMessageDate"]').prop( "checked", true );
+    else
+        $('#configWindow input[name="displayMessageDate"]').prop( "checked", false );
 
     if(story.config.customCSS[".msj"]){
         $('#configWindow input[name="msj_l_color"]').val(story.config.customCSS[".msj"].background);
@@ -376,7 +397,23 @@ function loadConfig(){
 
 function configSubmit(){
     var form = document.forms["configForm"];
-    var newConfig = {"storyName":form["storyName"].value,"displayActorName": form["displayActorName"].checked};
+    var displayActorName = false;
+    if(form["displayActorName"].checked)
+        displayActorName = true;
+
+    var displayActorAvatar = false;
+    if(form["displayActorAvatar"].checked)
+        displayActorAvatar = true;
+
+    var displayMessageDate = false;
+    if(form["displayMessageDate"].checked)
+        displayMessageDate = true;
+
+    var newConfig = {"storyName":form["storyName"].value,
+        "displayActorName": displayActorName,
+        "displayActorAvatar": displayActorAvatar,
+        "displayMessageDate": displayMessageDate
+    };
     newConfig.customCSS = {
         ".msj":{"background":form["msj_l_color"].value},
         ".msj::before":{"border-color":"transparent "+form["msj_l_color"].value+ " transparent transparent"},
@@ -562,6 +599,9 @@ $(document).ready(function() {
                 startStory();
             }
         }
+        //
+        //Save story in coockie
+        localStorage.currentStory = JSON.stringify(story);    
     });
     /* DRAG & DROP Message*/
     var messageSelected = null;

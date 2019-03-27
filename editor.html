@@ -45,6 +45,8 @@
                     <div>
                         <label>Story Name: <input type="text" name="storyName"></label><br>
                         <label>Display actor name: <input type="checkbox" name="displayActorName"></label><br>
+                        <label>Display actor avatar: <input type="checkbox" name="displayActorAvatar"></label><br>
+                        <label>Display message date: <input type="checkbox" name="displayMessageDate"></label><br>
                         <label>Background type:
                             <label>Color :
                             <input type="radio" name="background_type" value="color" onchange="$('#background_color').show();$('#background_url').hide()" checked></label>
@@ -98,7 +100,6 @@
                         <label>Actor :
                             <select id="actorSelector" name="actor"></select>
                         </label><br>
-                        <label>Date & Heure :<input type="datetime-local" name="datetime"></label><br>
                         <label>type Message :
                             <label>Text<input type="radio" name="type" value="text" onchange="showText()" checked></label>
                             <label>Media<input type="radio" name="type" value="payload" onchange="showPayload()"></label>
@@ -114,6 +115,7 @@
                             </label><br>
                             <label>Lien du contenu :<input type="text" name="content-url"></label><br>
                         </div>
+                        <label>Date & Heure :<input type="datetime-local" name="datetime"></label><br>
                         <label>Delai d'affichage
                             <input type="range" name="delay" id="delayInputId"min="0" max="10" value="0" oninput="delayOutputId.value = delayInputId.value+' sec'">
                             <output id="delayOutputId">0 sec</output>
