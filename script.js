@@ -459,11 +459,11 @@ function openMessageWindow(messageId, isNew){
         //clean form
         $('#messageWindow input[name="edit"]').prop("checked", false);
         $('#messageWindow input[name="type"][value="text"]').prop("checked", true);
-        $('#messageWindow input[name="text"]').val("");
+        $('#messageWindow textarea[name="text"]').val("");
         $('#messageWindow input[name="datetime"]').val("");
         $('#messageWindow input[name="content-type"][value="image"]').prop("checked", true);
         $('#messageWindow input[name="content-url"]').val("");
-        $('#messageWindow input[name="delay"]').val("");
+        $('#messageWindow input[name="delay"]').val(0);
         $('#messageWindow input[name="tapeflag"]').prop("checked", false);
     }
     else{
@@ -473,7 +473,7 @@ function openMessageWindow(messageId, isNew){
         //content type 
         if(story.conversation[messageId].text !== ""){
             $('#messageWindow input[name="type"][value="text"]').prop("checked", true);
-            $('#messageWindow input[name="text"]').val(story.conversation[messageId].text);
+            $('#messageWindow textarea[name="text"]').val(story.conversation[messageId].text);
             $('#messageWindow input[name="content-type"][value="image"]').prop("checked", true);
             $('#messageWindow input[name="content-url"]').val("");
         }
@@ -484,12 +484,13 @@ function openMessageWindow(messageId, isNew){
             else
                 $('#messageWindow input[name="content-type"][value="image"]').prop("checked", true);
             $('#messageWindow input[name="content-url"]').val(story.conversation[messageId].payload.url);
-            $('#messageWindow input[name="text"]').val("");
+            $('#messageWindow textarea[name="text"]').val("");
         }
         //general value
         $('#messageWindow option[value="'+story.conversation[messageId].actor+'"]').prop("selected", true);
         $('#messageWindow input[name="datetime"]').val(new Date(story.conversation[messageId].timestamp*1000).toISOString().substring(0, 16));
-        $('#messageWindow input[name="delay"]').val(story.conversation[messageId].delay);
+        $('#messageWindow input[name="delay"]').val(story.conversation[messageId].delay / 1000);
+        $('#delayOutputId').val(story.conversation[messageId].delay / 1000+ " sec");
         if(story.conversation[messageId].tapeFlag)
             $('#messageWindow input[name="tapeflag"]').prop("checked", true);
         else
