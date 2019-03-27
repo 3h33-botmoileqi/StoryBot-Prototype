@@ -54,6 +54,7 @@ function importLocal(){
         if(localStorage["story:"+storyName]){
             story = JSON.parse(localStorage["story:"+storyName]);
             reloadChat();
+            loadEditor();
         }
         else{
             alert("Story not found !");
