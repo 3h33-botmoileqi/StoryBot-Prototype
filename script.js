@@ -49,7 +49,8 @@ var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "cust
 var story = emptyStory;
 //--Load from local
 function importLocal(){
-    var storyName = prompt("Story name :");
+    var storyName = prompt("Story name :").toLowerCase();
+    console.log(storyName);
     if(storyName != null){
         if(localStorage["story:"+storyName]){
             story = JSON.parse(localStorage["story:"+storyName]);
@@ -64,7 +65,7 @@ function importLocal(){
 
 //--
 function saveLocal(){
-    localStorage["story:"+story.config.storyName] = JSON.stringify(story);
+    localStorage["story:"+story.config.storyName.toLowerCase()] = JSON.stringify(story);
     console.log("story saved in localStorage!");
 }
 
@@ -617,7 +618,7 @@ $(document).ready(function() {
         }
         //
         //Save story in coockie
-        localStorage["story:"+story.config.storyName] = JSON.stringify(story);    
+        localStorage["story:"+story.config.storyName.toLowerCase()] = JSON.stringify(story);    
     });
     /* DRAG & DROP Message*/
     var messageSelected = null;
