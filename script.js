@@ -48,7 +48,7 @@ var story = {
     ]
 };
 */
-var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "customCSS":{}},actor:{},conversation:[]};
+var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "displayActorAvatar":true, "displayMessageDate":true,"customCSS":{}},actor:{},conversation:[]};
 var story = emptyStory;
 //--Load from local
 function importLocal(){
@@ -196,11 +196,15 @@ function messageSubmit(){
         message.payload = {};
     }else{
         message.text = "";
-        if(form["content-type"].value == "image")
-            message.payload = {"type": "image","url":form["content-url"].value};
-        else
 
-            message.payload = {"type": "video","url":form["content-url"].value};
+        if(form["content-type"].value == "image")
+            message.payload = {"type": "image"};
+        else if(form["content-type"].value == "video")
+            message.payload = {"type": "video"};
+        else
+            message.payload = {"type": "son"};
+
+        message.payload.url = form["content-url"].value;
     }
     message.delay = parseInt(form["delay"].value) * 1000;
     message.tapeFlag = false;
@@ -270,9 +274,12 @@ function messageContentDisplay(text, payload){
                     break;
                 case "video":
                     content += '<p class="text-area"><video controls autoplay muted>'+
-                                  '<source src="https://storage.googleapis.com/coverr-main/mp4/Dog-and-Fly.mp4" type="video/mp4">'+
+                                  '<source src="'+payload.url+'" type="video/mp4">'+
                                   'Your browser does not support the video tag.'+
                                 '</video></p>';
+                    break;
+                case "son" :
+                    content += '<p class="text-area"><audio controls><source src="'+payload.url+'" type="audio/mpeg">Your browser does not support the audio element.</audio></p>';
                     break;
             }
         }
@@ -613,8 +620,11 @@ function openMessageWindow(messageId, isNew){
             $('#messageWindow input[name="type"][value="payload"]').prop("checked", true);
             if(story.conversation[messageId].payload.type == "image")
                 $('#messageWindow input[name="content-type"][value="image"]').prop("checked", true);
+            else if(story.conversation[messageId].payload.type == "video")
+                $('#messageWindow input[name="content-type"][value="video"]').prop("checked", true);
             else
-                $('#messageWindow input[name="content-type"][value="image"]').prop("checked", true);
+                $('#messageWindow input[name="content-type"][value="son"]').prop("checked", true);
+
             $('#messageWindow input[name="content-url"]').val(story.conversation[messageId].payload.url);
             $('#messageWindow textarea[name="text"]').val("");
         }
