@@ -226,7 +226,7 @@ function removeActor(actorElement){
         }
     }
     delete story.actor[name]
-    $("#actorSelector option[value='"+$(actorElement).parent().text()+"']").remove();
+    $(".actorSelector option[value='"+$(actorElement).parent().text()+"']").remove();
     $(actorElement).parent().remove();
     console.log("actor:"+ name+" Deleted");
 }
