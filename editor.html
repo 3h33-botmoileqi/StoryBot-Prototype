@@ -32,6 +32,7 @@
         <div id="MainMenu" style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px;display: flex;height: 5%;justify-content: flex-end;">
             <input type="file" id="fileInput" style="display:none">
             <button title="debug" onclick="debugJSON();">Debug</button>
+            <button title="Statistique de la Story" id="statsWindowToggle" onclick="event.stopPropagation();updateStats();$('#statsWindow').toggle()"><span class="glyphicon glyphicon-stats"></span></button>
             <button title="Parametre de la Story" id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
             <button title="Liste acteurs" id="actorListWindowToggle"><span class="glyphicon glyphicon-user"></span></button>
             <div style="border-left:3px solid #000; margin-left: 5%;margin-right: 5%"></div>
@@ -126,7 +127,7 @@
                             <label>Type de contenu :
                                 <label>Image<input type="radio" name="content-type" value="image" checked></label>
                                 <label>Video<input type="radio" name="content-type" value="video"></label>
-                                <label>Son<input type="radio" name="content-type" value="son"></label>
+                                <label>Son<input type="radio" name="content-type" value="audio"></label>
                             </label><br>
                             <label>Lien du contenu :<input type="text" name="content-url"></label><br>
                         </div>
@@ -143,6 +144,21 @@
                         <label>Placement de produit (pub) : <input type="checkbox" name="ads"></label><br>
                         <input type="submit">
                 </form>
+            </div>
+        </div>
+        <div class="window" id="statsWindow" style="display:none">
+            <div style="width:400px">
+                <h3>type de compte : Gratuit</h3>
+                <ul id="statsList">
+                    <li id="acteurStats"><label>Acteurs :<p></p></label></li>
+                    <li id="messageStats"><label>Messages :<p></p></label></li>
+                    <li id="textStats"><label>Message type Text :<p></p></label></li>
+                    <li id="imageStats"><label>Message type Image :<p></p></label></li>
+                    <li id="videoStats"><label>Message type Video :<p></p></label></li>
+                    <li id="audioStats"><label>Message type Audio :<p></p></label></li>
+                    <li id="characterStats"><label>Total de charactères :<p></p></label></li>
+                    <li id="timeSpentStats"><label>Temps passé sur le service :<p></p></label></li>
+                </ul>
             </div>
         </div>
         <script>

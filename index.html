@@ -40,11 +40,12 @@
             var editor = false;
             $(document).ready(function() {
                 $("#fileInput").change(function(){importJSON();});
-                $("#demoInput").click(function(){loadJSON(demo);startStory();$(".story-input").hide();});
+                $("#demoInput").click(function(){loadJSON(demo);$(".story-input").hide();});
             });
             var demo = 
             {
               "config": {
+                "storyName":"demo",
                 "displayActorName": true,
                 "displayActorAvatar": true,
                 "displayMessageDate": true,

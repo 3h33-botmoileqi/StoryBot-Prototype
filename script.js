@@ -54,11 +54,10 @@ var story = emptyStory;
 function importLocal(){
     var message = "Actuellement Stocké:\n"
     $.each(localStorage, function(index, element){
-        if(index.search("story:") >= 0)
+        if(index.search("story:") >= 0 && (index.match(/key: "value", /g)||[]).length == 1)
             message += "- "+index.substring(6).toLowerCase()+"\n";
     });
     var storyName = prompt(message + "\nStory name :\n").toLowerCase();
-    console.log(storyName);
     if(storyName != null){
         if(localStorage["story:"+storyName]){
             story = JSON.parse(localStorage["story:"+storyName]);
@@ -77,6 +76,69 @@ function saveLocal(){
     console.log("story saved in localStorage!");
 }
 
+//--
+var acteurCount;
+var acteurMax = 5;
+
+var messageCount;
+var messageMax = 100;
+
+var textCount;
+var textMax = 50;
+var characterCount;
+
+var imageCount;
+var imageMax = 20;
+
+var videoCount;
+var videoMax = 10;
+
+var audioCount;
+var audioMax = 20;
+function updateStats(){
+    acteurCount=0;
+    for(let actor in story.actor)
+        acteurCount++;
+
+    messageCount = 0;
+    textCount = 0;
+    imageCount = 0;
+    videoCount = 0;
+    audioCount = 0;
+    characterCount =0;
+    $.each(story.conversation, function( index, message){
+        console.log(message);
+        messageCount++;
+        if(message.text !== ""){
+            textCount++;
+            characterCount += message.text.length;
+        }
+        else{
+            switch(message.payload.type){
+                case "image":
+                    imageCount++;
+                    break;
+                case "video":
+                    videoCount++;
+                    break;
+                case "audio":
+                    audioCount++;
+                    break;
+            }
+        }
+    });    
+    $("#acteurStats>label>p").text(acteurCount+"/"+acteurMax);
+    $("#messageStats>label>p").text(messageCount+"/"+messageMax);
+    $("#textStats>label>p").text(textCount+"/"+textMax);
+    $("#imageStats>label>p").text(imageCount+"/"+imageMax);
+    $("#videoStats>label>p").text(videoCount+"/"+videoMax);
+    $("#audioStats>label>p").text(audioCount+"/"+audioMax);
+    $("#characterStats>label>p").text(characterCount);
+    var date = new Date(null);
+    date.setSeconds(localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"]); // specify value for SECONDS here
+    var result = date.toISOString().substr(11, 8);
+    $("#timeSpentStats>label>p").text(result);
+}
 //-- ExportJSON
 function exportJSON(){
     var json_string = JSON.stringify(story, undefined, 2);
@@ -202,7 +264,7 @@ function messageSubmit(){
         else if(form["content-type"].value == "video")
             message.payload = {"type": "video"};
         else
-            message.payload = {"type": "son"};
+            message.payload = {"type": "audio"};
 
         message.payload.url = form["content-url"].value;
     }
@@ -278,7 +340,7 @@ function messageContentDisplay(text, payload){
                                   'Your browser does not support the video tag.'+
                                 '</video></p>';
                     break;
-                case "son" :
+                case "audio" :
                     content += '<p class="text-area"><audio controls><source src="'+payload.url+'" type="audio/mpeg">Your browser does not support the audio element.</audio></p>';
                     break;
             }
@@ -399,9 +461,32 @@ const startStory = async () => {
         delay = message.delay;
     await waitFor(delay);
     insertChat(message, true);
+    if(!editor)
+        updateSession();
   });
   if(id >= story.conversation.length)
     console.log('Done');
+}
+
+function updateSession(){
+    if(localStorage["story:"+story.config.storyName+":lastMessage"]){
+        localStorage["story:"+story.config.storyName+":lastMessage"] = id;
+    }else{
+        localStorage["story:"+story.config.storyName+":lastMessage"] = 0;
+    }
+    /*
+    var storyName = story.config.storyName;
+    console.log(storyName);
+    if(localStorage["story:"+storyName]){
+        var localStory = JSON.parse(localStorage["story:"+storyName]);
+        if(localStorage["story:"+storyName]){
+            localStorage["story:"+storyName].lastMessage = id;
+        }else{
+            localStorage["story:"+storyName] = {"story":JSON.parse(localStorage["story:"+storyName]), "lastMessage": id}
+        }
+    }else{
+        localStorage["story:"+storyName] = JSON.stringify({"story":story, "lastMessage": 0});
+    }*/
 }
 
 function addEditable(element){
@@ -430,7 +515,6 @@ function importJSON(){
         reader.readAsText(json, "UTF-8");
         reader.onload = function (evt) {
             loadJSON(evt.target.result);
-            reloadChat();
         }
         reader.onerror = function (evt) {
             alert("error reading file");
@@ -543,6 +627,7 @@ function loadJSON(json){
     //console.log(story);
     if(editor)
         loadEditor();
+    reloadChat();
 }
 
 var sheet = null;
@@ -814,3 +899,23 @@ Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
     console.log("move index:"+from+ " to index:"+to);
 };
+
+var focus;
+//startSimulation and pauseSimulation defined elsewhere
+function handleVisibilityChange() {
+    if (document.hidden) {
+        focus = window.clearInterval(focus);
+    } else  {
+    focus = self.setInterval(function(){
+        if(!localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"])
+            localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"] = 0;
+        else if(localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"] == "NaN")
+            localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"] = 0;
+
+        localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"] = parseInt(localStorage["story:"+story.config.storyName.toLowerCase()+":timeSpent"]) + 1;
+        },1000);
+    }
+}
+
+document.addEventListener("visibilitychange", handleVisibilityChange, false);
+handleVisibilityChange();
