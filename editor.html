@@ -113,7 +113,7 @@
                         <input type="text" name="id" hidden>
                         <input type="checkbox" name="edit" hidden>
                         <label>Actor :
-                            <select id="actorSelector" name="actor"></select>
+                            <select class="actorSelector" name="actor"></select>
                         </label><br>
                         <label>type Message :
                             <label>Text<input type="radio" name="type" value="text" onchange="showText()" checked></label>
@@ -148,15 +148,20 @@
         </div>
         <div class="window" id="statsWindow" style="display:none">
             <div style="width:400px">
+                <button onclick="$('#statsWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
                 <h3>type de compte : Gratuit</h3>
                 <ul id="statsList">
-                    <li id="acteurStats"><label>Acteurs :<p></p></label></li>
+                    <label>Filtre par Acteur :
+                        <select class="actorSelector" name="actor" onchange="updateStats($(this).val());console.log(this);"><option value="all">Tous</option></select>
+                    </label>
                     <li id="messageStats"><label>Messages :<p></p></label></li>
                     <li id="textStats"><label>Message type Text :<p></p></label></li>
                     <li id="imageStats"><label>Message type Image :<p></p></label></li>
                     <li id="videoStats"><label>Message type Video :<p></p></label></li>
                     <li id="audioStats"><label>Message type Audio :<p></p></label></li>
                     <li id="characterStats"><label>Total de charactères :<p></p></label></li>
+                    <hr>
+                    <li id="acteurStats"><label>Acteurs :<p></p></label></li>
                     <li id="timeSpentStats"><label>Temps passé sur le service :<p></p></label></li>
                 </ul>
             </div>

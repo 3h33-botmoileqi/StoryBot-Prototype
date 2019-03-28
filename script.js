@@ -95,7 +95,8 @@ var videoMax = 10;
 
 var audioCount;
 var audioMax = 20;
-function updateStats(){
+function updateStats(selector = "all"){
+    console.log(selector);
     acteurCount=0;
     for(let actor in story.actor)
         acteurCount++;
@@ -107,23 +108,24 @@ function updateStats(){
     audioCount = 0;
     characterCount =0;
     $.each(story.conversation, function( index, message){
-        console.log(message);
-        messageCount++;
-        if(message.text !== ""){
-            textCount++;
-            characterCount += message.text.length;
-        }
-        else{
-            switch(message.payload.type){
-                case "image":
-                    imageCount++;
-                    break;
-                case "video":
-                    videoCount++;
-                    break;
-                case "audio":
-                    audioCount++;
-                    break;
+        if(message.actor == selector || selector == "all"){
+            messageCount++;
+            if(message.text !== ""){
+                textCount++;
+                characterCount += message.text.length;
+            }
+            else{
+                switch(message.payload.type){
+                    case "image":
+                        imageCount++;
+                        break;
+                    case "video":
+                        videoCount++;
+                        break;
+                    case "audio":
+                        audioCount++;
+                        break;
+                }
             }
         }
     });    
@@ -201,7 +203,7 @@ function addActor(name, actor){
 
 function addActorToEditor(name){
         $("#actorList").append('<li>'+name+'<span class="glyphicon glyphicon-remove actorRemove"></span><span class="glyphicon glyphicon-cog actorEdit"></span></li>');
-        $("#actorSelector").append('<option value="'+name+'">'+name+'</option>');
+        $(".actorSelector").append('<option value="'+name+'">'+name+'</option>');
         $('#actorList>li:last-child>.actorRemove').click(function(e){
             if(confirm("it will delete every message of this actor. Are you sure ?"))
                 removeActor(this)
