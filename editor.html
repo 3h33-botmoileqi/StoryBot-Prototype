@@ -33,7 +33,7 @@
             <input type="file" id="fileInput" style="display:none">
             <button title="debug" onclick="debugJSON();">Debug</button>
             <button title="Parametre de la Story" id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
-            <button title="Liste acteurs" id="actorWindowToggle"><span class="glyphicon glyphicon-user"></span></button>
+            <button title="Liste acteurs" id="actorListWindowToggle"><span class="glyphicon glyphicon-user"></span></button>
             <div style="border-left:3px solid #000; margin-left: 5%;margin-right: 5%"></div>
             <button title="Recharger la story" onclick="reloadChat();"><span class="glyphicon glyphicon-refresh"></span></button>
             <button title="Sauvegarder la story" onclick="saveLocal()"><span class="glyphicon glyphicon-floppy-disk"></span></button>
@@ -73,16 +73,28 @@
                         <label>Message Right Color :
                             <input type="color" name="msj_r_color">
                         </label><br>
+                        <label>Message Text Color:
+                            <input type="color" name="text_p_color">
+                        </label><br>
                         <input type="submit">
                     </div>
                 </form>
             </div>
         </div>
-        <div class="window" id="actorWindow" style="display: none">
+        <div class="window" id="actorListWindow" style="display: none">
             <div>
-                <button onclick="$('#actorWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
+                <button onclick="$('#actorListWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
+                <button onclick="$('#actorWindow').toggle()">Nouvelle acteur</button>
+                <ul id="actorList">
+                </ul>
+            </div>
+        </div>
+        <div class="window" id="actorWindow" style="display: none;">
+            <div>
                 <form name="actorForm" id="actorSubmit" method="post">
                     <div>
+                        <input type="text" name="oldName" hidden>
+                        <input type="checkbox" name="edit" hidden>
                         <label>Name: <input type="text" name="name"></label>
                         <label>Avatar:<input type="text" name="avatar"></label>
                         <label>Side:
@@ -92,8 +104,6 @@
                         <input type="submit">
                     </div>
                 </form>
-                <ul id="actorList">
-                </ul>
             </div>
         </div>
         <div class="window" id="messageWindow" style="display: none">
@@ -137,15 +147,15 @@
             var editor = true;
             $(document).ready(function() {
                 $("#fileInput").change(function(){importJSON();});
-                $("#actorWindowToggle").click(function(event){
+                $("#actorListWindowToggle").click(function(event){
                     event.stopPropagation();
-                    if($('#actorWindow').css("display") == "none"){
-                        $('#actorWindow').show();
+                    if($('#actorListWindow').css("display") == "none"){
+                        $('#actorListWindow').show();
                         console.log("show");
                         if($("#messageWindow").css("display") == "block")
                             $("#messageWindow").hide();
                     }else{
-                        $('#actorWindow').hide();
+                        $('#actorListWindow').hide();
                         console.log("hide");
                     }
                 });

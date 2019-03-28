@@ -7,6 +7,11 @@
     flex-direction:column;
     text-align: left;
 }
+
+.text > p{
+  color:black;
+}
+
 .text > p:first-of-type{
     width:100%;margin-top:0;margin-bottom:auto;line-height: 13px;font-size: 12px;
 }
@@ -131,6 +136,20 @@ body{
 #MainMenu button{
   font-size: 1.4em;
   margin-left:2.5%;
+}
+
+#actorListWindow {
+    width: 250px;
+}
+
+#actorList li{
+  margin-top: 10px;
+}
+
+#actorList span{
+  float: right;
+  font-size: 1.5em;
+  margin-left: 10px;
 }
 
 input:focus{

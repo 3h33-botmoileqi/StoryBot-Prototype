@@ -49,7 +49,12 @@ var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "cust
 var story = emptyStory;
 //--Load from local
 function importLocal(){
-    var storyName = prompt("Story name :").toLowerCase();
+    var message = "Actuellement Stocké:\n"
+    $.each(localStorage, function(index, element){
+        if(index.search("story:") >= 0)
+            message += "- "+index.substring(6).toLowerCase()+"\n";
+    });
+    var storyName = prompt(message + "\nStory name :\n").toLowerCase();
     console.log(storyName);
     if(storyName != null){
         if(localStorage["story:"+storyName]){
@@ -82,9 +87,40 @@ function exportJSON(){
 function debugJSON(){
     console.log(story);
 }
+//--
+function actorLoadToEditor(name){
+    var actor = story.actor[name];
+    $('#actorWindow input[name="edit"]').prop("checked",true);
+    $('#actorWindow input[name="oldName"]').val(name);
+    $('#actorWindow input[name="name"]').val(name);
+    $('#actorWindow input[name="avatar"]').val(actor.avatar);
+    $('#actorWindow input[type="radio"]').prop("checked",false);
+    if(actor.side == "left")
+        $('#actorWindow input[value="left"]').prop("checked", true);
+    else
+        $('#actorWindow input[value="right"]').prop("checked", true);
+    $('#actorWindow').show();
+}
 //-- Actor
 function actorSubmit(){
     var form = document.forms["actorForm"];
+    if(form["edit"].checked){
+        if(form["oldName"].value !== form["name"].value){
+            for(let message of story.conversation){
+                if(message.actor == form["oldName"].value)
+                    message.actor = form["name"].value;
+            }
+            delete story.actor[form["oldName"].value];
+            $("#actorSelector option[value='"+form["oldName"].value+"']").remove();
+            $("#actorList li").each(function(index, element){
+                if($(element).text() == form["oldName"].value){
+                    $(element).remove();
+                    return false;
+                }
+            });
+        }
+
+    }
     var newActor = {"avatar":form["avatar"].value,"side": form["side"].value};
     addActor(form["name"].value, newActor);
 }
@@ -93,14 +129,20 @@ function addActor(name, actor){
     story.actor[name] = actor;
     if(editor)
         addActorToEditor(name);
+    $("#actorWindow").hide();
+    reloadChat();
 }
 
 function addActorToEditor(name){
-        $("#actorList").append('<li>'+name+'<span class="glyphicon glyphicon-remove actorRemove" style="margin-left:auto"></span></li>');
+        $("#actorList").append('<li>'+name+'<span class="glyphicon glyphicon-remove actorRemove"></span><span class="glyphicon glyphicon-cog actorEdit"></span></li>');
         $("#actorSelector").append('<option value="'+name+'">'+name+'</option>');
-        $("#actorList>li:last-child>span").click(function(e){
+        $('#actorList>li:last-child>.actorRemove').click(function(e){
             if(confirm("it will delete every message of this actor. Are you sure ?"))
                 removeActor(this)
+        });
+        $('#actorList>li:last-child>.actorEdit').click(function(e){
+            var name = $(this).parent().text();
+            actorLoadToEditor(name);
         });
 }
 
@@ -407,6 +449,9 @@ function loadConfig(){
             $('#configWindow input[name="background_url"]').val(story.config.customCSS[".frame"]["background-image"].substring(5, story.config.customCSS[".frame"]["background-image"].length-2));
         }
     }
+    if(story.config.customCSS[".text > p"]){
+        $('#configWindow input[name="text_p_color"]').val(story.config.customCSS[".text > p"].color);
+    }
     console.log("config loaded");
 }
 
@@ -435,7 +480,10 @@ function configSubmit(){
         ".msj":{"background":form["msj_l_color"].value},
         ".msj::before":{"border-color":"transparent "+form["msj_l_color"].value+ " transparent transparent"},
         ".msj-rta":{"background":form["msj_r_color"].value},
-        ".msj-rta::after":{"border-color":form["msj_r_color"].value+" transparent transparent transparent"}
+        ".msj-rta::after":{"border-color":form["msj_r_color"].value+" transparent transparent transparent"},
+        ".text > p":{"color":form["text_p_color"].value},
+        ".text > span":{"color":form["text_p_color"].value}
+
     };
     if(form["background_type"].value == "color"){
         newConfig.customCSS[".frame"] = {"background":form["background_color"].value};
@@ -551,8 +599,8 @@ function openMessageWindow(messageId, isNew){
             $('#messageWindow input[name="tapeflag"]').prop("checked", false);
     }
     $('#messageWindow').show();
-    if($("#actorWindow").css("display") == "block")
-        $("#actorWindow").hide();
+    if($("#actorListWindow").css("display") == "block")
+        $("#actorListWindow").hide();
 }
 
 //$(document).click(function(e){console.log(e.target);story.conversation[id].tapeFlag = false;startStory();})
