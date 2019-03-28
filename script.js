@@ -21,7 +21,8 @@ var story = {
             "text":"Bonjour Paul !",
             "payload":"",
             "delay":"0",
-            "tapeFlag":false
+            "tapeFlag":false,
+            "ads":false
         },
         {
             "actor":"Paul",
@@ -29,7 +30,8 @@ var story = {
             "text":"Bonjour Jean !",
             "payload":{},
             "delay":"0",
-            "tapeFlag":true
+            "tapeFlag":true,
+            "ads":false
         },
         {
             "actor":"Paul",
@@ -40,7 +42,8 @@ var story = {
                 "url": "https://storage.googleapis.com/coverr-main/mp4/Dog-and-Fly.mp4"
             },
             "delay":"2000",
-            "tapeFlag":false
+            "tapeFlag":false,
+            "ads":false
         }
     ]
 };
@@ -177,7 +180,15 @@ function removeMessage(messageId){
 
 function messageSubmit(){
     var form = document.forms["messageForm"];
-    var message = {};
+    var message = {
+            "actor":"",
+            "timestamp":"",
+            "text":"",
+            "payload":"",
+            "delay":"0",
+            "tapeFlag":false,
+            "ads":false
+        };
     message.actor = form["actor"].value;
     message.timestamp = new Date(form["datetime"].value).getTime() /1000;
     if(form["type"].value == "text"){
@@ -195,6 +206,10 @@ function messageSubmit(){
     message.tapeFlag = false;
     if(form["tapeFlag"].checked)
         message.tapeFlag = true;
+
+    message.ads = false;
+    if(form["ads"].checked)
+        message.ads = true;
     console.log(form["id"].value);
     if(form["edit"].checked)
         editMessage(form["id"].value, message);
@@ -203,8 +218,7 @@ function messageSubmit(){
     $("#messageWindow").hide();
 }
 function editMessage(messageId, message){
-    $($('#tchat>li').get(messageId)).remove();
-    removeMessage(messageId);
+    removeMessage(messageId);   
     addMessage(messageId,message);
 }
 
@@ -281,8 +295,13 @@ function insertChat(message, append, messageId = null){
         if(story.config.displayActorName)
             control +=      '<span class="align-l">'+message.actor+'</span>';
         control +=          messageContentDisplay(message.text, message.payload);
-        if(story.config.displayMessageDate)
-            control +=          '<p class="date"><small>'+date+'</small></p>';
+        if(story.config.displayMessageDate){
+            control +=          '<p class="date">';
+            if(message.ads)
+                control +=              '<small class="ads">Ceci est un placement de produit</small>';
+            control +=                  '<small>'+date+'</small>'+
+                                '</p>';
+        }
         control +=          '</div>' +
                         '</div>' ;
         if(editor)
@@ -297,17 +316,28 @@ function insertChat(message, append, messageId = null){
         if(story.config.displayActorName)
             control +=      '<span class="align-r">'+message.actor+'</span>';
         control +=              messageContentDisplay(message.text, message.payload);
-        if(story.config.displayMessageDate)
-            control +=              '<p class="date"><small>'+date+'</small></p>' +
-                            '</div>';
+        if(story.config.displayMessageDate){
+            control +=          '<p class="date">';
+            if(message.ads)
+                control +=              '<small class="ads">Ceci est un placement de produit</small>';
+            control +=                  '<small>'+date+'</small>'+
+                                '</p>';
+        }
+        control +=      '</div>';
         if(story.config.displayActorAvatar)
             control +=      '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width: 48px;" src="'+actor.avatar+'" /></div>';                 
         control +=  '</div></li>';
     }
-    if(append || !$("#tchat>li").length)
+    if(append || !$("#tchat>li").length){
         $("#tchat").append(control)
+    }
     else{
-        $($("#tchat>li").get(messageId-1)).after(control);
+        if(messageId)
+            $($("#tchat>li").get(messageId-1)).after(control);
+        else{
+            console.log($("#tchat>li").get(messageId));
+            $($("#tchat>li").get(messageId)).before(control);
+        }
     }
     $("#tchat").scrollTop($("#tchat").prop('scrollHeight'));
 }
@@ -597,6 +627,11 @@ function openMessageWindow(messageId, isNew){
             $('#messageWindow input[name="tapeflag"]').prop("checked", true);
         else
             $('#messageWindow input[name="tapeflag"]').prop("checked", false);
+
+        if(story.conversation[messageId].ads)
+            $('#messageWindow input[name="ads"]').prop("checked", true);
+        else
+            $('#messageWindow input[name="ads"]').prop("checked", false);
     }
     $('#messageWindow').show();
     if($("#actorListWindow").css("display") == "block")
