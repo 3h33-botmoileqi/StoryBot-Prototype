@@ -54,13 +54,13 @@ var story = emptyStory;
 function importLocal(){
     var message = "Actuellement Stocké:\n"
     $.each(localStorage, function(index, element){
-        if(index.search("story:") >= 0 && (index.match(/key: "value", /g)||[]).length == 1)
+        if(index.search("story:") >= 0 && (index.match(/:/g)||[]).length == 1)
             message += "- "+index.substring(6).toLowerCase()+"\n";
     });
-    var storyName = prompt(message + "\nStory name :\n").toLowerCase();
+    var storyName = prompt(message + "\nStory name :\n");
     if(storyName != null){
-        if(localStorage["story:"+storyName]){
-            story = JSON.parse(localStorage["story:"+storyName]);
+        if(localStorage["story:"+storyName.toLowerCase()]){
+            story = JSON.parse(localStorage["story:"+storyName.toLowerCase()]);
             reloadChat();
             loadEditor();
         }
@@ -184,8 +184,9 @@ function actorSubmit(){
                 }
             });
         }
-
     }
+    if(form["avatar"].value == "")
+        form["avatar"].value = "https://cdn.iconscout.com/icon/free/png-256/avatar-380-456332.png";
     var newActor = {"avatar":form["avatar"].value,"side": form["side"].value};
     addActor(form["name"].value, newActor);
 }
