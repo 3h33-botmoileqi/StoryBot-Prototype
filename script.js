@@ -48,7 +48,7 @@ var story = {
     ]
 };
 */
-var emptyStory = {config:{"storyName":"New Story","displayActorName":true, "displayActorAvatar":true, "displayMessageDate":true,"customCSS":{}},actor:{},conversation:[]};
+var emptyStory = {config:{"storyName":"New Story", "adsEachMessage": -1,"displayActorName":true, "displayActorAvatar":true, "displayMessageDate":true,"customCSS":{}},actor:{},conversation:[]};
 var story = emptyStory;
 //--Load from local
 function importLocal(){
@@ -460,12 +460,13 @@ const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 const startStory = async () => {
   await asyncLoop(story.conversation, async (message) => {
     var delay = 0;
-    if(!editor)
+    if(!editor){
+        updateSession();
+        updateAds();
         delay = message.delay;
+    }
     await waitFor(delay);
     insertChat(message, true);
-    if(!editor)
-        updateSession();
   });
   if(id >= story.conversation.length)
     console.log('Done');
@@ -477,19 +478,14 @@ function updateSession(){
     }else{
         localStorage["story:"+story.config.storyName+":lastMessage"] = 0;
     }
-    /*
-    var storyName = story.config.storyName;
-    console.log(storyName);
-    if(localStorage["story:"+storyName]){
-        var localStory = JSON.parse(localStorage["story:"+storyName]);
-        if(localStorage["story:"+storyName]){
-            localStorage["story:"+storyName].lastMessage = id;
-        }else{
-            localStorage["story:"+storyName] = {"story":JSON.parse(localStorage["story:"+storyName]), "lastMessage": id}
-        }
-    }else{
-        localStorage["story:"+storyName] = JSON.stringify({"story":story, "lastMessage": 0});
-    }*/
+}
+
+function updateAds(){
+    if(id % story.config.adsEachMessage == 0 && id > 0){
+        var ads = `<div style="text-align: center;background: darkgray;"><h2>Bandeau Publicitère !</h2>
+                   </div>`;
+        $("#tchat").append(ads);
+    }
 }
 
 function addEditable(element){
@@ -536,26 +532,31 @@ function loadEditor(){
 
 function loadConfig(){
     var form = document.forms["configForm"];
+    $('#configWindow input[type="radio"]').prop("checked",false);
+    $('#configWindow input[type="checkbox"]').prop("checked",false);
     if(story.config.storyName)
         $('#configWindow input[name="storyName"]').val(story.config.storyName);
     else
         $('#configWindow input[name="storyName"]').val("");
 
+    if(story.config.adsEachMessage >=0){
+        $('#configWindow input[name="ads"]').prop("checked", true);
+        $("#adsConfig").show();
+        $('#configWindow input[name="adsEachMessage"]').val(story.config.adsEachMessage);
+        $('#configWindow #adsOutputId').text(story.config.adsEachMessage);
+    }else{
+        $('#configWindow input[name="adsEachMessage"]').val("-1");
+        $('#configWindow #adsOutputId').val("");
+    }
+
     if(story.config.displayActorName)
         $('#configWindow input[name="displayActorName"]').prop( "checked", true );
-    else
-        $('#configWindow input[name="displayActorName"]').prop( "checked", false );
-
 
     if(story.config.displayActorAvatar)
         $('#configWindow input[name="displayActorAvatar"]').prop( "checked", true );
-    else
-        $('#configWindow input[name="displayActorAvatar"]').prop( "checked", false );
 
     if(story.config.displayMessageDate)
         $('#configWindow input[name="displayMessageDate"]').prop( "checked", true );
-    else
-        $('#configWindow input[name="displayMessageDate"]').prop( "checked", false );
 
     if(story.config.customCSS[".msj"]){
         $('#configWindow input[name="msj_l_color"]').val(story.config.customCSS[".msj"].background);
@@ -583,6 +584,11 @@ function loadConfig(){
 
 function configSubmit(){
     var form = document.forms["configForm"];
+
+    var adsEachMessage = -1;
+    if(form["ads"].checked)
+        adsEachMessage = parseInt(form["adsEachMessage"].value);
+
     var displayActorName = false;
     if(form["displayActorName"].checked)
         displayActorName = true;
@@ -596,6 +602,7 @@ function configSubmit(){
         displayMessageDate = true;
 
     var newConfig = {"storyName":form["storyName"].value,
+        "adsEachMessage" : adsEachMessage,
         "displayActorName": displayActorName,
         "displayActorAvatar": displayActorAvatar,
         "displayMessageDate": displayMessageDate
@@ -740,7 +747,22 @@ function openMessageWindow(messageId, isNew){
 $(document).ready(function() {
     //-- Init Tchat
     reloadChat();
-
+    
+    //Test New tab test story
+    /*
+    var testUrl = window.location.origin;
+    window.location.pathname.split("/").forEach(function(element, index){
+        if(element !== "editor" && element !== "editor.html" && element !== "")
+            testUrl += "/"+element;
+        else if(element !== "")
+            testUrl += "/index.html"
+    });
+    $("#testSubmit").attr("action", testUrl);
+    $("#testSubmit").submit(function(){
+        document.forms["testForm"].story.value= JSON.stringify(story);
+        console.log("redirection")
+    })
+    */
     $("#actorSubmit").submit(function(){
         actorSubmit();
         return false;

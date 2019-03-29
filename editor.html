@@ -31,6 +31,7 @@
         </div>
         <div id="MainMenu" style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px;display: flex;height: 5%;justify-content: flex-end;">
             <input type="file" id="fileInput" style="display:none">
+            <<!--button onclick="$('#testButtonSubmit').trigger('submit')">Testé<form method="post" target="_blank" action="" name="testForm" id="testSubmit"><input type="text" name="story" hidden><input type="submit" id="testButtonSubmit" hidden></form></button>-->
             <button title="debug" onclick="debugJSON();">Debug</button>
             <button title="Statistique de la Story" id="statsWindowToggle" onclick="event.stopPropagation();updateStats();$('#statsWindow').toggle()"><span class="glyphicon glyphicon-stats"></span></button>
             <button title="Parametre de la Story" id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
@@ -49,6 +50,14 @@
                 <form name="configForm" id="configSubmit" method="post">
                     <div>
                         <label>Story Name: <input type="text" name="storyName"></label><br>
+                        <label>
+                            <input type="checkbox" name="ads" onchange="$('#adsConfig').toggle()">
+                                Pub chaque X Message :
+                            <div id="adsConfig" style="display:none;">
+                                <output id="adsOutputId">50</output></label>
+                                <input type="range" name="adsEachMessage" id="adsInputId" min="1" max="100" value="50" oninput="adsOutputId.value = adsInputId.value">
+                            </div>
+                        </label><br>
                         <label>Display actor name: <input type="checkbox" name="displayActorName"></label><br>
                         <label>Display actor avatar: <input type="checkbox" name="displayActorAvatar"></label><br>
                         <label>Display message date: <input type="checkbox" name="displayMessageDate"></label><br>
