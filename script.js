@@ -574,8 +574,11 @@ function loadConfig(){
             $('#configWindow input[name="background_url"]').val(story.config.customCSS[".frame"]["background-image"].substring(5, story.config.customCSS[".frame"]["background-image"].length-2));
         }
     }
-    if(story.config.customCSS[".text > p"]){
-        $('#configWindow input[name="text_p_color"]').val(story.config.customCSS[".text > p"].color);
+    if(story.config.customCSS[".text-l > p"]){
+        $('#configWindow input[name="text_l_color"]').val(story.config.customCSS[".text-l > p"].color);
+    }
+    if(story.config.customCSS[".text-r > p"]){
+        $('#configWindow input[name="text_r_color"]').val(story.config.customCSS[".text-r > p"].color);
     }
     console.log("config loaded");
 }
@@ -612,8 +615,10 @@ function configSubmit(){
         ".msj::before":{"border-color":"transparent "+form["msj_l_color"].value+ " transparent transparent"},
         ".msj-rta":{"background":form["msj_r_color"].value},
         ".msj-rta::after":{"border-color":form["msj_r_color"].value+" transparent transparent transparent"},
-        ".text > p":{"color":form["text_p_color"].value},
-        ".text > span":{"color":form["text_p_color"].value}
+        ".text-l > p":{"color":form["text_l_color"].value},
+        ".text-r > p":{"color":form["text_r_color"].value},
+        ".text-l > span":{"color":form["text_l_color"].value},
+        ".text-r > span":{"color":form["text_r_color"].value}
 
     };
     if(form["background_type"].value == "color"){
@@ -805,8 +810,12 @@ $(document).ready(function() {
                     }
                 }
             }else if($(event.target).hasClass("addMessage")){
-                event.stopPropagation();
-                openMessageWindow(tempId, true);
+                if(Object.keys(story.actor).length > 0){
+                    event.stopPropagation();
+                    openMessageWindow(tempId, true);
+                }else{
+                    alert("Attention aucun acteur crée!")
+                }
             }
             else{
                 removeEditable();
