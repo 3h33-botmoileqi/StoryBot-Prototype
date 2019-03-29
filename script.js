@@ -339,10 +339,15 @@ function messageContentDisplay(text, payload){
                     content += '<p class="text-area"><img src="'+ payload.url+'"/></p>';
                     break;
                 case "video":
-                    content += '<p class="text-area"><video controls autoplay muted>'+
+                    if(payload.url.search("youtube")){
+                        content += '<p><iframe width="560" height="315" src="'+payload.url.replace("watch?v=", "embed/")+'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>'
+                    }
+                    else{
+                        content += '<p class="text-area"><video controls autoplay muted>'+
                                   '<source src="'+payload.url+'" type="video/mp4">'+
                                   'Your browser does not support the video tag.'+
                                 '</video></p>';
+                    }
                     break;
                 case "audio" :
                     content += '<p class="text-area"><audio controls><source src="'+payload.url+'" type="audio/mpeg">Your browser does not support the audio element.</audio></p>';
@@ -932,7 +937,7 @@ $(document).ready(function() {
     });
 
     $("#tchat").mouseleave(function(event){
-        //$(".target").remove();
+        //  $(".target").remove();
     });
 });
 
