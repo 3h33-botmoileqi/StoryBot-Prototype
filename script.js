@@ -806,7 +806,7 @@ $(document).ready(function() {
                     openMessageWindow(messageId, false);
                 }
             }
-            else if(($(event.target).hasClass("text") || $(event.target).parent().hasClass("text"))  && !$(event.target).hasClass("date")){
+            else if(($(event.target).hasClass("text") || $(event.target).hasClass("text-area"))  && !$(event.target).hasClass("date")){
                 if(!$(event.target).hasClass("textEdit")){
                     removeEditable();
                     if($(event.target).hasClass("text")){
