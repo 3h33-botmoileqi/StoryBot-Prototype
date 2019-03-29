@@ -484,8 +484,14 @@ function updateAds(){
     if(id % story.config.adsEachMessage == 0 && id > 0 && story.config.adsEachMessage >0){
         var ads = `<div style="text-align: center;background: darkgray;"><h2>PUB</h2>
                    </div>`;
+
         $("#tchat").append(ads);
+        //$("#tchat").append(adsContent);
     }
+}
+
+function adsContent(){
+
 }
 
 function addEditable(element){
@@ -562,16 +568,16 @@ function loadConfig(){
         $('#configWindow input[name="msj_l_color"]').val(story.config.customCSS[".msj"].background);
         $('#configWindow input[name="msj_r_color"]').val(story.config.customCSS[".msj-rta"].background);
     }
-    if(story.config.customCSS[".frame"]){
-        if(story.config.customCSS[".frame"].background)
+    if(story.config.customCSS["#tchat"]){
+        if(story.config.customCSS["#tchat"].background)
         {
             $('#configWindow input[name="background_type"][value="color"]').prop( "checked", true );
             //$('#configWindow input[name="background_type"][value="url"]').prop( "checked", false );
-            $('#configWindow input[name="background_color"]').val(story.config.customCSS[".frame"].background);
+            $('#configWindow input[name="background_color"]').val(story.config.customCSS["#tchat"].background);
         }else{
             //$('#configWindow input[name="background_type"][value="color"]').prop( "checked", false );
             $('#configWindow input[name="background_type"][value="url"]').prop( "checked", true );
-            $('#configWindow input[name="background_url"]').val(story.config.customCSS[".frame"]["background-image"].substring(5, story.config.customCSS[".frame"]["background-image"].length-2));
+            $('#configWindow input[name="background_url"]').val(story.config.customCSS["#tchat"]["background-image"].substring(5, story.config.customCSS["#tchat"]["background-image"].length-2));
         }
     }
     if(story.config.customCSS[".text-l > p"]){
@@ -622,9 +628,9 @@ function configSubmit(){
 
     };
     if(form["background_type"].value == "color"){
-        newConfig.customCSS[".frame"] = {"background":form["background_color"].value};
+        newConfig.customCSS["#tchat"] = {"background":form["background_color"].value};
     }else{
-        newConfig.customCSS[".frame"] = {"background-image":"url(\""+form["background_url"].value+"\")"};
+        newConfig.customCSS["#tchat"] = {"background-image":"url(\""+form["background_url"].value+"\")"};
     }
     story.config = newConfig;
     $("#configWindow").hide();

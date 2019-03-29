@@ -87,7 +87,7 @@ body{
 #tchat {
     width:100%;
     list-style-type: none;
-    padding:18px;
+    padding: 50px 18px 18px 18px;
     position:absolute;
     bottom:47px;
     display:flex;
