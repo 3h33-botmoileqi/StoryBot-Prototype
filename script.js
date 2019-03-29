@@ -62,7 +62,8 @@ function importLocal(){
         if(localStorage["story:"+storyName.toLowerCase()]){
             story = JSON.parse(localStorage["story:"+storyName.toLowerCase()]);
             reloadChat();
-            loadEditor();
+            if(editor)
+                loadEditor();
         }
         else{
             alert("Story not found !");
