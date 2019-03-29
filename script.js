@@ -481,7 +481,7 @@ function updateSession(){
 }
 
 function updateAds(){
-    if(id % story.config.adsEachMessage == 0 && id > 0){
+    if(id % story.config.adsEachMessage == 0 && id > 0 && story.config.adsEachMessage >0){
         var ads = `<div style="text-align: center;background: darkgray;"><h2>PUB</h2>
                    </div>`;
         $("#tchat").append(ads);
