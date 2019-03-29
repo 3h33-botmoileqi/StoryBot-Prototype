@@ -29,11 +29,15 @@
             <div class="story-input" style="position:absolute;left:50%;top:50%;transform: translate(-50%,-50%);text-align: center;">
                 <div class="input-file-container">  
                     <input class="input-file" id="fileInput" type="file">
-                    <label tabindex="0" for="my-file" class="input-file-trigger">Upload your story</label>
+                    <label tabindex="0" for="my-file" class="input-file-trigger">Envoyé votre story</label>
                 </div>
                 <div class="input-file-container">
                     <button class="input-file" id="demoInput" style="min-height: 50px;"></button>
-                    <label tabindex="0" for="my-file" class="input-file-trigger">Use Demo</label>
+                    <label tabindex="0" for="my-file" class="input-file-trigger">Jouer la démo</label>
+                </div>
+                <div class="input-file-container">
+                    <button class="input-file" id="localInput" style="min-height: 50px;"></button>
+                    <label tabindex="0" for="my-file" class="input-file-trigger">Charger un story</label>
                 </div>
             </div>
         <script>
@@ -41,6 +45,7 @@
             $(document).ready(function() {
                 $("#fileInput").change(function(){importJSON();});
                 $("#demoInput").click(function(){loadJSON(demo);$(".story-input").hide();});
+                $("localInput").click(function(){importLocal();$(".story-input").hide();});
             });
             var demo = 
             {

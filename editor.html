@@ -31,7 +31,7 @@
         </div>
         <div id="MainMenu" style="position:absolute;right:0;top: 0;margin-right: 25px;margin-top: : 25px;display: flex;height: 5%;justify-content: flex-end;">
             <input type="file" id="fileInput" style="display:none">
-            <<!--button onclick="$('#testButtonSubmit').trigger('submit')">Testé<form method="post" target="_blank" action="" name="testForm" id="testSubmit"><input type="text" name="story" hidden><input type="submit" id="testButtonSubmit" hidden></form></button>-->
+            <!--button onclick="$('#testButtonSubmit').trigger('submit')">Testé<form method="post" target="_blank" action="" name="testForm" id="testSubmit"><input type="text" name="story" hidden><input type="submit" id="testButtonSubmit" hidden></form></button>-->
             <button title="debug" onclick="debugJSON();">Debug</button>
             <button title="Statistique de la Story" id="statsWindowToggle" onclick="event.stopPropagation();updateStats();$('#statsWindow').toggle()"><span class="glyphicon glyphicon-stats"></span></button>
             <button title="Parametre de la Story" id="configWindowToggle"><span class="glyphicon glyphicon-cog"></span></button>
@@ -103,6 +103,7 @@
             <div>
                 <form name="actorForm" id="actorSubmit" method="post">
                     <div>
+                        <button onclick="$('#actorWindow').hide()" style="position:absolute;top:0;right:0;margin:5px"><span class="glyphicon glyphicon-remove"></span></button>
                         <input type="text" name="oldName" hidden>
                         <input type="checkbox" name="edit" hidden>
                         <label>Name: <input type="text" name="name"></label>
