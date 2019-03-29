@@ -932,7 +932,7 @@ $(document).ready(function() {
     });
 
     $("#tchat").mouseleave(function(event){
-        $(".target").remove();
+        //$(".target").remove();
     });
 });
 

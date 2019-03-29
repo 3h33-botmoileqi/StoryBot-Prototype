@@ -201,6 +201,11 @@ input:focus{
     text-align: center;
 }
 
+.target .addMessage{
+  font-size: 1.5em;
+  width: 100%;
+}
+
 .selected{
     position:absolute;
 }
