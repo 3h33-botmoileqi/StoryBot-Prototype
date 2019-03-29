@@ -45,7 +45,7 @@
             $(document).ready(function() {
                 $("#fileInput").change(function(){importJSON();});
                 $("#demoInput").click(function(){loadJSON(demo);$(".story-input").hide();});
-                $("localInput").click(function(){importLocal();$(".story-input").hide();});
+                $("#localInput").click(function(){importLocal();$(".story-input").hide();});
             });
             var demo = 
             {
