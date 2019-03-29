@@ -370,7 +370,7 @@ function insertChat(message, append, messageId = null){
         if(story.config.displayMessageDate){
             control +=          '<p class="date">';
             if(message.ads)
-                control +=              '<small class="ads">Ceci est un placement de produit</small>';
+                control +=              '<small class="ads">Advertising</small>';
             control +=                  '<small>'+date+'</small>'+
                                 '</p>';
         }
@@ -391,7 +391,7 @@ function insertChat(message, append, messageId = null){
         if(story.config.displayMessageDate){
             control +=          '<p class="date">';
             if(message.ads)
-                control +=              '<small class="ads">Ceci est un placement de produit</small>';
+                control +=              '<small class="ads">Advertising</small>';
             control +=                  '<small>'+date+'</small>'+
                                 '</p>';
         }
@@ -482,7 +482,7 @@ function updateSession(){
 
 function updateAds(){
     if(id % story.config.adsEachMessage == 0 && id > 0){
-        var ads = `<div style="text-align: center;background: darkgray;"><h2>Bandeau Publicitère !</h2>
+        var ads = `<div style="text-align: center;background: darkgray;"><h2>PUB</h2>
                    </div>`;
         $("#tchat").append(ads);
     }
